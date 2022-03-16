@@ -1,0 +1,44 @@
+generals:
+  # Save all logs in file logs/logger.txt
+  #   0: Don't save log
+  #   1: Save log
+  save_log_file: 1
+
+  # Reset log file on start
+  #   0: false
+  #   1: true
+  reset_log_file: 1
+
+  # What browser are you using to play Pegaxy
+  #   1: Firefox
+  #   2: Chrome
+  #   3: Chromium
+  browser: 2
+
+  # Which hotkey is used to refresh the browser
+  #   1: CTRL + F5
+  #   2: CTRL + SHIFT + R
+  refresh_page_shortcut: 2
+  # Time format to show on logs:
+  # Full date time: "%Y-%m-%d %H:%M:%S"
+  time_format: "%m-%d %H:%M"
+
+screen:
+#  # Number of login attempts
+#  number_login_attempts: 3
+
+  # Timer to check for unknown Pegaxy screen errors, if it's in an unmanaged screen
+  # go back to racing root page
+  refresh_check_error: 15
+
+  # Long timer for when there are no available actions to perform in that manager
+  # Case 1- All horses have 0 energy
+  # Case 2- There are no available horses to race
+  refresh_long_time: 60
+
+threshold:
+  ######## Don't change these configs #############
+  # image comparison factor to find in screen - min 0 - máx 1
+  default: 0.7
+  button: 0.8
+  #################################################

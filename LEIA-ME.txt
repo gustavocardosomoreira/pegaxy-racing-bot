@@ -1,0 +1,24 @@
+Pegaxy Racing Bot
+Versão: 0.0.1
+Author: Gustavo Moreira <gustavocardosomoreira@gmail.com>
+
+
+Utilitários Externos ao Bot Necessários:
+Para qualquer sistema operacional:
+- Python 3.10 instalado
+
+Para Linux:
+- xdotool instalado
+
+
+
+Features:
+Mandatory features:
+DONE - Support for multiple windows
+TODO - Support for 2D and 3D racing
+DONE - Support for multiple Pegas
+DONE - Support for "failed to join race" error
+DONE- Support for "your pega ran out of energy" error
+Optional features:
+?? - Support for "stuck on starting match timeout" error
+?? - Support for send pega to race (maybe)??
