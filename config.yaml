@@ -33,7 +33,7 @@ screen:
 
   # Long timer for when there are no available actions to perform in that manager
   # Case 1- All horses have 0 energy
-  # Case 2- There are no available horses to race
+  # Case 2- There are no available horses to _race
   refresh_long_time: 60
 
 threshold:

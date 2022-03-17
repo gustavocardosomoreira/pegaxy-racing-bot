@@ -32,11 +32,11 @@ class PegaxyManager:
         check_error = current_screen == PegaxyScreenEnum.NOT_FOUND.value
 
         refresh_check_error = Config.get('screen', 'refresh_check_error')*60
-        if ((check_error)) or (refresh_check_error and (now() - self.refresh_check_error > refresh_check_error)):
+        if check_error or (refresh_check_error and (now() - self.refresh_check_error > refresh_check_error)):
             PegaxyScreen.do_check_error(self)
 
         refresh_long_time = Config.get('screen', 'refresh_long_time')*60
-        if (refresh_long_time and self.refresh_long_time and (now() - self.refresh_long_time < refresh_long_time)):
+        if refresh_long_time and self.refresh_long_time and (now() - self.refresh_long_time < refresh_long_time):
             return True
         else:
             PegaxyScreen.try_to_race(self)

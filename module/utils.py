@@ -30,6 +30,7 @@ def randomness_number(n, randomn_factor_size=None):
 
     return int(randomized_n)
 
+
 def randomize(loc: float, width: float, safe_factor=0):
     """randomize a number between loc and width with a safe distance (safe_factor*width).
 
@@ -47,6 +48,7 @@ def randomize(loc: float, width: float, safe_factor=0):
     
     return uniform(min_value, max_value)
 
+
 def randomize_int(loc: float, width: float, safe_factor=0):
     """randomize a number between loc and width with a safe distance (safe_factor*width).
 
@@ -57,10 +59,11 @@ def randomize_int(loc: float, width: float, safe_factor=0):
     """
     return round(randomize(loc, width, safe_factor))
 
-def refresh_page(delay:int = 5):
+
+def refresh_page(delay: int = 5):
     logger("🌍 Refreshing browser!")
     
-    shortcut_config = Config.get('generals','refresh_page_shortcut')
+    shortcut_config = Config.get('generals', 'refresh_page_shortcut')
     if shortcut_config == 1:
         pyautogui.hotkey('ctrl', 'f5')
     else:
@@ -68,7 +71,8 @@ def refresh_page(delay:int = 5):
             with pyautogui.hold('shift'):
                 pyautogui.press('r')
     
-def do_with_timeout(function, args = [], kwargs = {}, time_beteween: float = 0.5, timeout: float = 20):
+
+def do_with_timeout(function, args=[], kwargs={}, time_beteween: float = 0.5, timeout: float = 20):
     start_time = time.time()
     while True:
         if time.time() - start_time > timeout:
@@ -80,6 +84,7 @@ def do_with_timeout(function, args = [], kwargs = {}, time_beteween: float = 0.5
             return result
         
         time.sleep(time_beteween)
+
 
 def now():
     return time.time()
