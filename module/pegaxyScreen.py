@@ -5,24 +5,27 @@ from cv2 import cv2
 
 from .mouse import *
 from .utils import *
+from .logger import LoggerEnum, logger, logger_translated
 
 
 class PegaxyScreenEnum(Enum):
     NOT_FOUND = -1
-    RACING_OUT_OF_ENERGY_ERROR = 1
-    RACING_UNABLE_TO_JOIN_RACE_ERROR = 2
-    RACING_NO_AVAILABLE_PEGAS = 3
-    RENTING = 4
-    MARKETPLACE = 5
-    BREEDING = 6
-    MY_ASSETS = 7
-    RACING_ROOT = 8
-    RACING_PICK_PEGA = 9
-    RACING_RACE = 10
-    RACING_FINISHED = 11
-    RACING_MATCHING = 12
-    RACING_MATCH_FOUND = 13  # No Metamask in sight
+    RENT = 1
+    MARKET = 2
+    BREED = 3
+    MYASSETS = 4
+
+    ROOT = 5
+    PICKPEGA = 6
+    RACE = 7
+    FINISHED = 8
+    MATCHING = 9
+    MATCHFOUND = 10  # No Metamask in sight
     # RACING_CALCULATING_REWARDS = 14
+
+    OUTOFENERGY = 11
+    UNABLETOJOINRACE = 12
+    NOAVAILABLEPEGAS = 13
 
     METAMASK_SIGN = 20
 
@@ -66,22 +69,24 @@ class PegaxyScreen:
     @staticmethod
     def get_current_screen(time_beteween: float = 0.5, timeout: float = 20):
         targets = {
-            PegaxyScreenEnum.RENTING.value: Image.TARGETS["identify_renting"],
-            PegaxyScreenEnum.MARKETPLACE.value: Image.TARGETS["identify_marketplace"],
-            PegaxyScreenEnum.BREEDING.value: Image.TARGETS["identify_breeding"],
-            PegaxyScreenEnum.MY_ASSETS.value: Image.TARGETS["identify_my_assets"],
-            PegaxyScreenEnum.RACING_ROOT.value: Image.TARGETS["identify_racing_root"],
-            PegaxyScreenEnum.RACING_PICK_PEGA.value: Image.TARGETS["identify_racing_pick_pega"],
-            PegaxyScreenEnum.RACING_MATCHING.value: Image.TARGETS["identify_racing_matching"],
-            PegaxyScreenEnum.RACING_MATCH_FOUND.value: Image.TARGETS["identify_racing_match_found"],
-            PegaxyScreenEnum.RACING_RACE.value: Image.TARGETS["identify_racing_race"],
-            PegaxyScreenEnum.RACING_FINISHED.value: Image.TARGETS["identify_racing_finished"],
-            PegaxyScreenEnum.RACING_OUT_OF_ENERGY_ERROR.value: Image.TARGETS["identify_racing_out_of_energy_error"],
-            PegaxyScreenEnum.RACING_UNABLE_TO_JOIN_RACE_ERROR.value: Image.TARGETS[
-                "identify_racing_unable_to_join_race_error"],
+            PegaxyScreenEnum.RENT.value: Image.TARGETS["identify_rent"],
+            PegaxyScreenEnum.MARKET.value: Image.TARGETS["identify_market"],
+            PegaxyScreenEnum.BREED.value: Image.TARGETS["identify_breed"],
+            PegaxyScreenEnum.MYASSETS.value: Image.TARGETS["identify_myassets"],
+
+            PegaxyScreenEnum.ROOT.value: Image.TARGETS["identify_root"],
+            PegaxyScreenEnum.PICKPEGA.value: Image.TARGETS["identify_pickpega"],
+            PegaxyScreenEnum.RACE.value: Image.TARGETS["identify_race"],
+            PegaxyScreenEnum.FINISHED.value: Image.TARGETS["identify_finished"],
+            PegaxyScreenEnum.MATCHING.value: Image.TARGETS["identify_matching"],
+            PegaxyScreenEnum.MATCHFOUND.value: Image.TARGETS["identify_matchfound"],
+
+            PegaxyScreenEnum.OUTOFENERGY.value: Image.TARGETS["identify_outofenergy"],
+            PegaxyScreenEnum.UNABLETOJOINRACE.value: Image.TARGETS["identify_unabletojoinrace"],
             # PegaxyScreenEnum.RACING_CALCULATING_REWARDS.value: Image.TARGETS["racing_calculating_rewards"],
+            PegaxyScreenEnum.NOAVAILABLEPEGAS.value: Image.TARGETS["identify_noavailablepegas"],
+
             PegaxyScreenEnum.METAMASK_SIGN.value: Image.TARGETS["sign"],
-            PegaxyScreenEnum.RACING_NO_AVAILABLE_PEGAS.value: Image.TARGETS["identify_racing_no_available_pegas"],
         }
         max_value = 0
         img = Image.screen()
@@ -98,155 +103,234 @@ class PegaxyScreen:
 
     @staticmethod
     def go_to_racing_root(manager, current_screen=None):
-        """This function goes to the racing_start screen.
-        Making sure not to interrupt running races.
-        WIP"""
-        current_screen = PegaxyScreen.get_current_screen() if current_screen == None else current_screen
-        if current_screen == PegaxyScreenEnum.RACING_ROOT.value:
-            return
-        elif current_screen == PegaxyScreenEnum.RENTING.value or \
-                current_screen == PegaxyScreenEnum.MARKETPLACE.value or \
-                current_screen == PegaxyScreenEnum.BREEDING.value or \
-                current_screen == PegaxyScreenEnum.MY_ASSETS.value:
+        current_screen = PegaxyScreen.get_current_screen() if current_screen is None else current_screen
+        if current_screen == PegaxyScreenEnum.RENT.value or \
+                current_screen == PegaxyScreenEnum.MARKET.value or \
+                current_screen == PegaxyScreenEnum.BREED.value or \
+                current_screen == PegaxyScreenEnum.MYASSETS.value:
             click_when_target_appears("racing_menu")
             pyautogui.moveTo(10, 10)
-            PegaxyScreen.wait_for_screen(PegaxyScreenEnum.RACING_ROOT.value)
-        else:
-            # Missing future implementation
-            return
+            return True
 
     @staticmethod
     def go_to_racing_pick_pega(manager, current_screen=None):
-        """This function goes to the pick_pega screen
-        Making sure not to interrupt running races.
-        WIP"""
-        current_screen = PegaxyScreen.get_current_screen() if current_screen == None else current_screen
-        if current_screen == PegaxyScreenEnum.RACING_PICK_PEGA.value:
-            return
-        elif current_screen == PegaxyScreenEnum.RACING_ROOT.value:
+        """This function goes to the pick_pega screen. WIP"""
+        current_screen = PegaxyScreen.get_current_screen() if current_screen is None else current_screen
+        result = True
+
+        if current_screen == PegaxyScreenEnum.ROOT.value:
             click_when_target_appears("pick_a_pega")
-            pyautogui.moveTo(10, 10)
-            PegaxyScreen.wait_for_screen(PegaxyScreenEnum.RACING_PICK_PEGA.value)
-            return
-        elif current_screen == PegaxyScreenEnum.RENTING.value or \
-                current_screen == PegaxyScreenEnum.MARKETPLACE.value or \
-                current_screen == PegaxyScreenEnum.BREEDING.value or \
-                current_screen == PegaxyScreenEnum.MY_ASSETS.value:
-            PegaxyScreen.go_to_racing_root(manager, current_screen)
-            PegaxyScreen.go_to_racing_pick_pega(manager)
-            return
-        else:
-            # Missing future implementation
-            return
+        elif current_screen == PegaxyScreenEnum.FINISHED.value:
+            click_when_target_appears('next_match')
+
+        pyautogui.moveTo(10, 10)
+        result = PegaxyScreen.treat_error_no_available_pegas(manager)
+
+        return result
 
     @staticmethod
-    def race(manager):
-        """This function selects a pega available to race.
+    def prepare(manager, current_screen=None):
+        current_screen = PegaxyScreen.get_current_screen() if current_screen is None else current_screen
+        result = True
+        if current_screen == PegaxyScreenEnum.RENT.value or \
+                current_screen == PegaxyScreenEnum.MARKET.value or \
+                current_screen == PegaxyScreenEnum.BREED.value or \
+                current_screen == PegaxyScreenEnum.MYASSETS.value:
+            PegaxyScreen.go_to_racing_root(manager, current_screen)
+            result = PegaxyScreen.go_to_racing_pick_pega(manager)
+
+        elif current_screen == PegaxyScreenEnum.ROOT.value or \
+                current_screen == PegaxyScreenEnum.FINISHED.value:
+            result = PegaxyScreen.go_to_racing_pick_pega(manager, current_screen)
+
+        elif current_screen == PegaxyScreenEnum.RACE.value:
+            result = False
+
+        return result
+
+    @staticmethod
+    def race(manager, current_screen=None):
+        current_screen = PegaxyScreen.get_current_screen() if current_screen is None else current_screen
+        result = True
+        if current_screen == PegaxyScreenEnum.PICKPEGA.value:  # Pick a Pega with enough energy
+            manager.set_attr("race_requested", 0)
+            pega = PegaxyScreen.select_pega(manager)
+            if pega:
+                manager.set_attr("race_requested", 1)
+                result = PegaxyScreen.confirm_race(manager)
+            else:
+                manager.set_refresh_timer("refresh_long_time")
+                result = False
+
+        return result
+
+    @staticmethod
+    def confirm_race(manager, current_screen=None):
+        current_screen = PegaxyScreen.get_current_screen() if current_screen is None else current_screen
+        result = None
+        if current_screen == PegaxyScreenEnum.RACE.value:  # Race confirmed.
+            result = True
+
+        elif current_screen == PegaxyScreenEnum.MATCHING.value or \
+                current_screen == PegaxyScreenEnum.MATCHFOUND.value:  # Wait a little bit more
+            sleep(1)
+            PegaxyScreen.confirm_race(manager)
+
+        elif current_screen == PegaxyScreenEnum.UNABLETOJOINRACE.value:  # Deal with Racing Match Errors
+            click_when_target_appears('find_another')
+            pyautogui.moveTo(10, 10)
+            manager.set_attr("race_requested", 1)
+            PegaxyScreen.confirm_race(manager)
+
+        elif current_screen == PegaxyScreenEnum.METAMASK_SIGN.value:
+            signed = Metamask.sign_race(manager)
+            if signed:
+                manager.set_attr("race_requested", 0)
+                PegaxyScreen.confirm_race(manager)
+
+        return result
+
+    @staticmethod
+    def treat_error_no_available_pegas(manager):
+        """Returns True if the error was treated
+           Returns False if you shoud leave the manager"""
+        current_screen = PegaxyScreen.get_current_screen()
+
+        if current_screen == PegaxyScreenEnum.NOAVAILABLEPEGAS.value:
+            logger_translated("Long timer", LoggerEnum.TIMER_REFRESH)
+            manager.set_refresh_timer("refresh_long_time")
+            return False
+        else:
+            return True
+
+    @staticmethod
+    def select_pega(manager):
+        """This function selects a pega available to select_pega.
         Returns True if there is one.
         Returns False if all pegas are out of energy"""
         pos = Image.get_target_positions('horse_active')
         # pos2(Image.get_target_positions('horse_inactive'))
         sorted(pos, key=lambda l: l[1])
 
-        return PegaxyScreen._race(manager, pos)
+        return PegaxyScreen._select_pega(manager, pos)
 
     @staticmethod
-    def _race(manager, positions, n=0):
+    def _select_pega(manager, positions, n=0):
         if n == len(positions):
-            return False
+            return None
 
         click_randomly_in_position(*positions[n])
         click_when_target_appears('start')
         pyautogui.moveTo(10, 10)
-        PegaxyScreen.wait_for_leave_screen(PegaxyScreenEnum.RACING_PICK_PEGA.value)
-        sleep(1)
+
         current_screen = PegaxyScreen.get_current_screen()
-        if current_screen == PegaxyScreenEnum.RACING_OUT_OF_ENERGY_ERROR.value:
+        if current_screen == PegaxyScreenEnum.OUTOFENERGY.value:
             click_when_target_appears('out_of_energy_error')
-            sleep(1)
-            manager.race_requested = 0
+            pyautogui.moveTo(10, 10)
+            manager.set_attr("race_request", 0)
+            if PegaxyScreen._select_pega(manager, positions, n=n + 1) is None:
+                return None
 
-            if not PegaxyScreen._race(manager, positions, n=n + 1):
-                return False
-
-        manager.race_requested = 1
+        manager.set_attr("race_requested", 1)
         return True
 
     @staticmethod
     def do_check_error(manager):
         return
 
+
+class Metamask:
     @staticmethod
-    def try_to_race(manager):
-        current_screen = PegaxyScreen.get_current_screen()
-
-        if current_screen == PegaxyScreenEnum.RACING_PICK_PEGA.value:
-            manager.race_requested = 0
-            if PegaxyScreen.race(manager):
-                manager.refresh_long_time = 0
-                PegaxyScreen.try_to_race(manager)
-            else:
-                manager.refresh_long_time = now()
-                return
-
-        elif current_screen == PegaxyScreenEnum.RACING_RACE.value:
-            return
-
-        elif current_screen == PegaxyScreenEnum.RACING_UNABLE_TO_JOIN_RACE_ERROR.value:
-            click_when_target_appears('find_another')
+    def sign_race(manager):
+        # Se o sinal "race_requested" estiver ligado:
+        #   Assinar a metamask
+        # Senao:
+        #   Clicar em cancelar
+        #   Desligar o sinal "race_requested"
+        # recursivar try_to_race()
+        if manager.race_requested == 1:
+            click_when_target_appears('sign')
+            manager.set_attr("race_requested", 0)
             pyautogui.moveTo(10, 10)
-            PegaxyScreen.wait_for_leave_screen(current_screen)
-            manager.race_requested = 1
-            sleep(3)
-            PegaxyScreen.try_to_race(manager)
+            PegaxyScreen.wait_for_leave_screen(PegaxyScreenEnum.METAMASK_SIGN.value)
+            return True
+        return False
 
-        elif current_screen == PegaxyScreenEnum.RACING_FINISHED.value:
-            # This returns to the pick a pega screen
-            click_when_target_appears('next_match')
-            pyautogui.moveTo(10, 10)
-            PegaxyScreen.wait_for_leave_screen(current_screen)
-            manager.race_requested = 1
-            sleep(3)
-            PegaxyScreen.try_to_race(manager)
-
-        elif current_screen == PegaxyScreenEnum.RENTING.value or \
-                current_screen == PegaxyScreenEnum.MARKETPLACE.value or \
-                current_screen == PegaxyScreenEnum.BREEDING.value or \
-                current_screen == PegaxyScreenEnum.MY_ASSETS.value or \
-                current_screen == PegaxyScreenEnum.RACING_ROOT.value:
-            manager.race_requested = 0
-            PegaxyScreen.go_to_racing_pick_pega(manager, current_screen)
-            PegaxyScreen.try_to_race(manager)
-
-        elif current_screen == PegaxyScreenEnum.RACING_NO_AVAILABLE_PEGAS.value:
-            manager.refresh_long_time = now()
-            manager.race_requested = 0
-            return
-
-        elif current_screen == PegaxyScreenEnum.RACING_MATCHING.value or \
-                current_screen == PegaxyScreenEnum.RACING_MATCH_FOUND.value:
-            PegaxyScreen.try_to_race(manager)
-
-        elif current_screen == PegaxyScreenEnum.METAMASK_SIGN.value:
-            # Se o sinal "race_requested" estiver ligado:
-            #   Assinar a metamask
-            # Senao:
-            #   Clicar em cancelar
-            #   Desligar o sinal "race_requested"
-            # recursivar try_to_race()
-            if manager.race_requested == 1:
-                click_when_target_appears('sign')
-                manager.race_requested = 0
-                pyautogui.moveTo(10, 10)
-            PegaxyScreen.try_to_race(manager)
-
-        else:
-            PegaxyScreen.try_to_race(manager)
+    # @staticmethod
+    # def try_to_race(manager, current_screen=None):
+    #     """ This function contains the main logic of the bot.
+    #     Returns False: If it has to perform more steps to start a select_pega.
+    #     Returns True: If all steps to start a select_pega have been performed,
+    #                   Or if no other actions can be taken in this manager."""
+    #     current_screen = PegaxyScreen.get_current_screen() if current_screen == None else current_screen
+    #
+    #     ## Possible screens that start a select_pega ###############3 Create a funct called select_pega for this
+    #     # Pick a Pega with enough energy
+    #     if current_screen == PegaxyScreenEnum.PICKPEGA.value:
+    #         manager.race_requested = 0
+    #         if PegaxyScreen.select_pega(manager):
+    #             manager.refresh_long_time = 0
+    #             return None
+    #         else:
+    #             manager.refresh_long_time = now()
+    #             return True
+    #
+    #     # Deal with Racing Match Errors ###################### Create a funct called select_pega for this
+    #     elif current_screen == PegaxyScreenEnum.UNABLETOJOINRACE.value:
+    #         click_when_target_appears('find_another')
+    #         pyautogui.moveTo(10, 10)
+    #         PegaxyScreen.wait_for_screen(PegaxyScreenEnum.MATCHING.value)
+    #         manager.race_requested = 1
+    #         return PegaxyScreen.try_to_race(manager, PegaxyScreenEnum.MATCHING.value)
+    #
+    #     ## Helper screens to start a select_pega #################33 Create a funct called try again for this
+    #     # Race finished. Start new select_pega.
+    #     elif current_screen == PegaxyScreenEnum.FINISHED.value:
+    #         # This returns to the pick a pega screen
+    #         click_when_target_appears('next_match')
+    #         pyautogui.moveTo(10, 10)
+    #         PegaxyScreen.wait_for_screen(PegaxyScreenEnum.PICKPEGA.value)
+    #         manager.race_requested = 1
+    #         return PegaxyScreen.try_to_race(manager, PegaxyScreenEnum.PICKPEGA.value)
+    #
+    #     ## Screens that confirm a select_pega is underway
+    #     # Race confirmed. Go to the next manager
+    #     elif current_screen == PegaxyScreenEnum.RACE.value:
+    #         return True
+    #
+    #     ## Helper screen to get back to the racing module ##### Create a funct called prepare for this
+    #     # Out of the racing module. Go to the right module.
+    #     elif current_screen == PegaxyScreenEnum.RENT.value or \
+    #             current_screen == PegaxyScreenEnum.MARKET.value or \
+    #             current_screen == PegaxyScreenEnum.BREED.value or \
+    #             current_screen == PegaxyScreenEnum.MYASSETS.value or \
+    #             current_screen == PegaxyScreenEnum.ROOT.value:
+    #         manager.race_requested = 0
+    #         PegaxyScreen.go_to_racing_pick_pega(manager, current_screen)
+    #         return None
+    #
+    #     ## Error screen that is impossible to overcome
+    #     elif current_screen == PegaxyScreenEnum.NOAVAILABLEPEGAS.value:
+    #         manager.refresh_long_time = now()
+    #         manager.race_requested = 0
+    #         return True
+    #
+    #     ## Screens that will be waiting for metamask sign soon
+    #     elif current_screen == PegaxyScreenEnum.MATCHING.value or \
+    #             current_screen == PegaxyScreenEnum.MATCHFOUND.value:
+    #         sleep(3)
+    #         return None
+    #
+    #     ## Metamask sign screen
+    #     elif current_screen == PegaxyScreenEnum.METAMASK_SIGN.value:
+    #         return PegaxyScreen.sign_mask(manager)
+    #
+    #     return True
 
 # class Pega:
 # Future class, there is some future use here though I can't think of any right now.
 # Use no1: Store energy of pegas to reduce windows switches.
-# Use no2: Record pega return times to try to _race more in the end.
+# Use no2: Record pega return times to try to _select_pega more in the end.
 
 
 # class PegaxyScreen:

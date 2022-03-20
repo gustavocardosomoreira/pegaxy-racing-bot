@@ -31,17 +31,25 @@ class PegaxyManager:
 
         check_error = current_screen == PegaxyScreenEnum.NOT_FOUND.value
 
-        refresh_check_error = Config.get('screen', 'refresh_check_error')*60
+        refresh_check_error = Config.get('screen', 'refresh_check_error') * 60
         if check_error or (refresh_check_error and (now() - self.refresh_check_error > refresh_check_error)):
             PegaxyScreen.do_check_error(self)
 
-        refresh_long_time = Config.get('screen', 'refresh_long_time')*60
+        refresh_long_time = Config.get('screen', 'refresh_long_time') * 60
         if refresh_long_time and self.refresh_long_time and (now() - self.refresh_long_time < refresh_long_time):
             return True
         else:
-            PegaxyScreen.try_to_race(self)
+            setattr(self, "refresh_long_time", 0)
+            result = PegaxyScreen.prepare(self)
+            if result:
+                PegaxyScreen.race(self)
+        return
 
-        return True
+    def set_attr(self, propertie_name, state):
+        if state:
+            setattr(self, propertie_name, 1)
+        else:
+            setattr(self, propertie_name, 0)
 
     def set_refresh_timer(self, propertie_name):
         setattr(self, propertie_name, time.time())

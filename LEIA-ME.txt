@@ -17,8 +17,8 @@ Mandatory features:
 DONE - Support for multiple windows
 TODO - Support for 2D and 3D racing
 DONE - Support for multiple Pegas
-DONE - Support for "failed to join _race" error
+DONE - Support for "failed to join do_race" error
 DONE- Support for "your pega ran out of energy" error
 Optional features:
 ?? - Support for "stuck on starting match timeout" error
-?? - Support for send pega to _race (maybe)??
+?? - Support for send pega to do_race (maybe)??
