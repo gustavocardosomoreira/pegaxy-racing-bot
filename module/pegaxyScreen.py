@@ -109,7 +109,7 @@ class PegaxyScreen:
                 current_screen == PegaxyScreenEnum.BREEDING.value or \
                 current_screen == PegaxyScreenEnum.MY_ASSETS.value:
             click_when_target_appears("racing_menu")
-            pyautogui.moveTo(0, 0)
+            pyautogui.moveTo(10, 10)
             PegaxyScreen.wait_for_screen(PegaxyScreenEnum.RACING_ROOT.value)
         else:
             # Missing future implementation
@@ -125,7 +125,7 @@ class PegaxyScreen:
             return
         elif current_screen == PegaxyScreenEnum.RACING_ROOT.value:
             click_when_target_appears("pick_a_pega")
-            pyautogui.moveTo(0, 0)
+            pyautogui.moveTo(10, 10)
             PegaxyScreen.wait_for_screen(PegaxyScreenEnum.RACING_PICK_PEGA.value)
             return
         elif current_screen == PegaxyScreenEnum.RENTING.value or \
@@ -141,11 +141,11 @@ class PegaxyScreen:
 
     @staticmethod
     def race(manager):
-        """This function selects a pega available to _race.
+        """This function selects a pega available to race.
         Returns True if there is one.
         Returns False if all pegas are out of energy"""
         pos = Image.get_target_positions('horse_active')
-        pos.append(Image.get_target_positions('horse_inactive'))
+        # pos2(Image.get_target_positions('horse_inactive'))
         sorted(pos, key=lambda l: l[1])
 
         return PegaxyScreen._race(manager, pos)
@@ -154,15 +154,18 @@ class PegaxyScreen:
     def _race(manager, positions, n=0):
         click_randomly_in_position(*positions[n])
         click_when_target_appears('start')
-        pyautogui.moveTo(0, 0)
-        PegaxyScreen.wait_for_leave_screen(PegaxyScreenEnum.RACING_PICK_PEGA)
+        pyautogui.moveTo(10, 10)
+        PegaxyScreen.wait_for_leave_screen(PegaxyScreenEnum.RACING_PICK_PEGA.value)
         sleep(3)
         if n == len(positions):
             return False
 
         current_screen = PegaxyScreen.get_current_screen()
-        if current_screen == PegaxyScreenEnum.RACING_OUT_OF_ENERGY_ERROR:
+        if current_screen == PegaxyScreenEnum.RACING_OUT_OF_ENERGY_ERROR.value:
+            click_when_target_appears('out_of_energy_error')
+            sleep(3)
             manager.race_requested = 0
+
             PegaxyScreen._race(manager, positions, n=n + 1)
 
         manager.race_requested = 1
@@ -190,15 +193,16 @@ class PegaxyScreen:
 
         elif current_screen == PegaxyScreenEnum.RACING_UNABLE_TO_JOIN_RACE_ERROR.value:
             click_when_target_appears('find_another')
-            pyautogui.moveTo(0, 0)
+            pyautogui.moveTo(10, 10)
             PegaxyScreen.wait_for_leave_screen(current_screen)
             manager.race_requested = 1
             sleep(3)
             PegaxyScreen.try_to_race(manager)
 
         elif current_screen == PegaxyScreenEnum.RACING_FINISHED.value:
+            # This returns to the pick a pega screen
             click_when_target_appears('next_match')
-            pyautogui.moveTo(0, 0)
+            pyautogui.moveTo(10, 10)
             PegaxyScreen.wait_for_leave_screen(current_screen)
             manager.race_requested = 1
             sleep(3)
@@ -231,7 +235,8 @@ class PegaxyScreen:
             # recursivar try_to_race()
             if manager.race_requested == 1:
                 click_when_target_appears('sign')
-                pyautogui.moveTo(0, 0)
+                manager.race_requested = 0
+                pyautogui.moveTo(10, 10)
             PegaxyScreen.try_to_race(manager)
 
         else:
