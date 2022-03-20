@@ -152,14 +152,14 @@ class PegaxyScreen:
 
     @staticmethod
     def _race(manager, positions, n=0):
+        if n == len(positions):
+            return False
+
         click_randomly_in_position(*positions[n])
         click_when_target_appears('start')
         pyautogui.moveTo(10, 10)
         PegaxyScreen.wait_for_leave_screen(PegaxyScreenEnum.RACING_PICK_PEGA.value)
         sleep(3)
-        if n == len(positions):
-            return False
-
         current_screen = PegaxyScreen.get_current_screen()
         if current_screen == PegaxyScreenEnum.RACING_OUT_OF_ENERGY_ERROR.value:
             click_when_target_appears('out_of_energy_error')
