@@ -240,7 +240,13 @@ class PegaxyScreen:
 
     @staticmethod
     def do_check_error(manager):
-        return
+        current_screen = PegaxyScreen.get_current_screen()
+        if current_screen == PegaxyScreenEnum.NOT_FOUND.value or \
+                current_screen == PegaxyScreenEnum.UNABLETOJOINRACE.value or \
+                current_screen == PegaxyScreenEnum.NOAVAILABLEPEGAS.value:
+            refresh_page(manager)
+            sleep(5)
+            return
 
 
 class Metamask:
