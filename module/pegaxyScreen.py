@@ -165,7 +165,11 @@ class PegaxyScreen:
         return result
 
     @staticmethod
-    def confirm_race(manager, current_screen=None):
+    def confirm_race(manager, current_screen=None, n=0):
+        if n == 240:
+            refresh_page(manager)
+            return False
+
         current_screen = PegaxyScreen.get_current_screen() if current_screen is None else current_screen
         result = None
         if current_screen == PegaxyScreenEnum.RACE.value:  # Race confirmed.
@@ -174,19 +178,19 @@ class PegaxyScreen:
         elif current_screen == PegaxyScreenEnum.MATCHING.value or \
                 current_screen == PegaxyScreenEnum.MATCHFOUND.value:  # Wait a little bit more
             sleep(1)
-            PegaxyScreen.confirm_race(manager)
+            PegaxyScreen.confirm_race(manager, n=n + 1)
 
         elif current_screen == PegaxyScreenEnum.UNABLETOJOINRACE.value:  # Deal with Racing Match Errors
             click_when_target_appears('find_another')
             pyautogui.moveTo(10, 10)
             manager.set_attr("race_requested", 1)
-            PegaxyScreen.confirm_race(manager)
+            PegaxyScreen.confirm_race(manager, n=n + 1)
 
         elif current_screen == PegaxyScreenEnum.METAMASK_SIGN.value:
             signed = Metamask.sign_race(manager)
             if signed:
                 manager.set_attr("race_requested", 0)
-                PegaxyScreen.confirm_race(manager)
+                PegaxyScreen.confirm_race(manager, n=n + 1)
 
         return result
 
