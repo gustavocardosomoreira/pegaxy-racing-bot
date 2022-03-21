@@ -219,11 +219,16 @@ class PegaxyScreen:
         return PegaxyScreen._select_pega(manager, pos)
 
     @staticmethod
-    def _select_pega(manager, positions, n=0):
+    def _select_pega(manager, positions, reverse=True, n=0):
         if n == len(positions):
             return None
 
-        click_randomly_in_position(*positions[n])
+        if reverse:
+            pos = len(positions) - n - 1
+        else:
+            pos = n
+
+        click_randomly_in_position(*positions[pos])
         click_when_target_appears('start')
         pyautogui.moveTo(10, 10)
 
@@ -232,7 +237,7 @@ class PegaxyScreen:
             click_when_target_appears('out_of_energy_error')
             pyautogui.moveTo(10, 10)
             manager.set_attr("race_request", 0)
-            if PegaxyScreen._select_pega(manager, positions, n=n + 1) is None:
+            if PegaxyScreen._select_pega(manager, positions, reverse=reverse, n=n + 1) is None:
                 return None
 
         manager.set_attr("race_requested", 1)
