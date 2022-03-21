@@ -166,7 +166,7 @@ class PegaxyScreen:
 
     @staticmethod
     def confirm_race(manager, current_screen=None, n=0):
-        if n == 240:
+        if n == 60:
             refresh_page(manager)
             return False
 
@@ -191,6 +191,9 @@ class PegaxyScreen:
             if signed:
                 manager.set_attr("race_requested", 0)
                 PegaxyScreen.confirm_race(manager, n=n + 1)
+
+        else:
+            PegaxyScreen.confirm_race(manager, n=n + 1)
 
         return result
 
