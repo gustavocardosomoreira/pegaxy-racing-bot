@@ -232,7 +232,7 @@ class PegaxyScreen:
     @staticmethod
     def _select_pega(manager, positions, order, n=0):
         if n == len(positions):
-            return None
+            return False
 
         if order:
             pos = len(positions) - n - 1
@@ -250,8 +250,8 @@ class PegaxyScreen:
             pyautogui.moveTo(10, 10)
             manager.set_attr("race_request", 0)
             PegaxyScreen.wait_for_leave_screen(current_screen)
-            if PegaxyScreen._select_pega(manager, positions, order=order, n=n + 1) is None:
-                return None
+            if PegaxyScreen._select_pega(manager, positions, order=order, n=n + 1) is False:
+                return False
 
         manager.set_attr("race_requested", 1)
         return True
