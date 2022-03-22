@@ -110,7 +110,7 @@ class PegaxyScreen:
                 current_screen == PegaxyScreenEnum.MYASSETS.value:
             click_when_target_appears("racing_menu")
             pyautogui.moveTo(10, 10)
-            PegaxyScreen.wait_for_screen(PegaxyScreenEnum.ROOT.value)
+            PegaxyScreen.wait_for_screen(PegaxyScreenEnum.ROOT.value, time_beteween=1)
             return True
 
     @staticmethod
@@ -125,7 +125,7 @@ class PegaxyScreen:
             click_when_target_appears('next_match')
 
         pyautogui.moveTo(10, 10)
-        PegaxyScreen.wait_for_leave_screen(current_screen)
+        PegaxyScreen.wait_for_leave_screen(current_screen, time_beteween=1)
         result = PegaxyScreen.treat_error_no_available_pegas(manager)
 
         return result
@@ -190,7 +190,7 @@ class PegaxyScreen:
             click_when_target_appears('find_another')
             pyautogui.moveTo(10, 10)
             manager.set_attr("race_requested", 1)
-            PegaxyScreen.wait_for_leave_screen(current_screen)
+            PegaxyScreen.wait_for_leave_screen(current_screen, time_beteween=1)
             PegaxyScreen.confirm_race(manager, n=n + 1)
 
         elif current_screen == PegaxyScreenEnum.METAMASK_SIGN.value:
@@ -242,14 +242,14 @@ class PegaxyScreen:
         click_randomly_in_position(*positions[pos])
         click_when_target_appears('start')
         pyautogui.moveTo(10, 10)
-        PegaxyScreen.wait_for_leave_screen(PegaxyScreenEnum.PICKPEGA.value)
+        PegaxyScreen.wait_for_leave_screen(PegaxyScreenEnum.PICKPEGA.value, time_beteween=1)
 
         current_screen = PegaxyScreen.get_current_screen()
         if current_screen == PegaxyScreenEnum.OUTOFENERGY.value:
             click_when_target_appears('out_of_energy_error')
             pyautogui.moveTo(10, 10)
             manager.set_attr("race_request", 0)
-            PegaxyScreen.wait_for_leave_screen(current_screen)
+            PegaxyScreen.wait_for_leave_screen(current_screen, time_beteween=1)
             if PegaxyScreen._select_pega(manager, positions, order=order, n=n + 1) is False:
                 return False
 
@@ -280,7 +280,7 @@ class Metamask:
             click_when_target_appears('sign')
             manager.set_attr("race_requested", 0)
             pyautogui.moveTo(10, 10)
-            PegaxyScreen.wait_for_leave_screen(PegaxyScreenEnum.METAMASK_SIGN.value)
+            PegaxyScreen.wait_for_leave_screen(PegaxyScreenEnum.METAMASK_SIGN.value, time_beteween=1)
             return True
         return False
 
