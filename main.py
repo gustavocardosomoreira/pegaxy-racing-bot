@@ -11,7 +11,7 @@ from module.logger import logger, reset_log_file
 from module.manager import create_pegaxy_managers
 
 
-__version__ = "0.0.7"
+__version__ = "0.0.8"
 
 
 def main(config_file):
