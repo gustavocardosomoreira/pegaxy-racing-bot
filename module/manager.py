@@ -39,10 +39,11 @@ class PegaxyManager:
         if refresh_long_time and self.refresh_long_time and (now() - self.refresh_long_time < refresh_long_time):
             self.do_skip_manager()
 
-        result = PegaxyScreen.prepare(self, self.refresh_long_time)
-        if result:
-            PegaxyScreen.race(self)
-        setattr(self, "refresh_long_time", 0)
+        if PegaxyScreen.prepare(self, self.refresh_long_time):
+            if PegaxyScreen.race(self):
+                setattr(self, "refresh_long_time", 0)
+        else:
+            self.do_skip_manager()
 
         return True
 
