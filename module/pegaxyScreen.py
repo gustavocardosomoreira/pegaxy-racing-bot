@@ -263,7 +263,7 @@ class PegaxyScreen:
                 current_screen == PegaxyScreenEnum.UNABLETOJOINRACE.value or \
                 current_screen == PegaxyScreenEnum.NOAVAILABLEPEGAS.value:
             refresh_page(manager)
-            sleep(5)
+            sleep(20)
             return
 
 
