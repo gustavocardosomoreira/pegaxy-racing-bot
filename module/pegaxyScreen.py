@@ -168,7 +168,7 @@ class PegaxyScreen:
 
     @staticmethod
     def confirm_race(manager, current_screen=None, n=0):
-        if n == 60:
+        if n == 180:
             refresh_page(manager)
             return False
 
@@ -179,7 +179,7 @@ class PegaxyScreen:
 
         elif current_screen == PegaxyScreenEnum.MATCHING.value or \
                 current_screen == PegaxyScreenEnum.MATCHFOUND.value:  # Wait a little bit more
-            sleep(3)
+            sleep(1)
             PegaxyScreen.confirm_race(manager, n=n + 1)
 
         elif current_screen == PegaxyScreenEnum.UNABLETOJOINRACE.value:  # Deal with Racing Match Errors
