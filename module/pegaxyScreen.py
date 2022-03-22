@@ -131,7 +131,11 @@ class PegaxyScreen:
         return result
 
     @staticmethod
-    def prepare(manager, current_screen=None):
+    def prepare(manager, refresh=False, current_screen=None):
+        if refresh:
+            refresh_page()
+            sleep(10)
+
         current_screen = PegaxyScreen.get_current_screen() if current_screen is None else current_screen
         result = True
         if current_screen == PegaxyScreenEnum.RENT.value or \

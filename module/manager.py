@@ -38,12 +38,13 @@ class PegaxyManager:
         refresh_long_time = Config.get('screen', 'refresh_long_time') * 60
         if refresh_long_time and self.refresh_long_time and (now() - self.refresh_long_time < refresh_long_time):
             return True
-        else:
-            setattr(self, "refresh_long_time", 0)
-            result = PegaxyScreen.prepare(self)
-            if result:
-                PegaxyScreen.race(self)
-        return
+
+        result = PegaxyScreen.prepare(self, self.refresh_long_time)
+        if result:
+            PegaxyScreen.race(self)
+        setattr(self, "refresh_long_time", 0)
+
+        return True
 
     def set_attr(self, propertie_name, state):
         if state:
