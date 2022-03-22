@@ -37,7 +37,7 @@ class PegaxyManager:
 
         refresh_long_time = Config.get('screen', 'refresh_long_time') * 60
         if refresh_long_time and self.refresh_long_time and (now() - self.refresh_long_time < refresh_long_time):
-            return True
+            self.do_skip_manager()
 
         result = PegaxyScreen.prepare(self, self.refresh_long_time)
         if result:
@@ -54,3 +54,6 @@ class PegaxyManager:
 
     def set_refresh_timer(self, propertie_name):
         setattr(self, propertie_name, time.time())
+
+    def do_skip_manager(self):
+        return
