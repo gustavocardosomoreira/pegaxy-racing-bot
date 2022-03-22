@@ -222,14 +222,15 @@ class PegaxyScreen:
         # pos2(Image.get_target_positions('horse_inactive'))
         sorted(pos, key=lambda l: l[1])
 
-        return PegaxyScreen._select_pega(manager, pos)
+        order_config = Config.get('screen', 'order')
+        return PegaxyScreen._select_pega(manager, pos, order=order_config)
 
     @staticmethod
-    def _select_pega(manager, positions, reverse=True, n=0):
+    def _select_pega(manager, positions, order, n=0):
         if n == len(positions):
             return None
 
-        if reverse:
+        if order:
             pos = len(positions) - n - 1
         else:
             pos = n
@@ -245,7 +246,7 @@ class PegaxyScreen:
             pyautogui.moveTo(10, 10)
             manager.set_attr("race_request", 0)
             PegaxyScreen.wait_for_leave_screen(current_screen)
-            if PegaxyScreen._select_pega(manager, positions, reverse=reverse, n=n + 1) is None:
+            if PegaxyScreen._select_pega(manager, positions, order=order, n=n + 1) is None:
                 return None
 
         manager.set_attr("race_requested", 1)

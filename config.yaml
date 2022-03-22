@@ -33,6 +33,10 @@ screen:
   # Timer to check if horses have recovered energy, from 0 energy
   refresh_long_time: 5
 
+  # Order to pick pegas to race
+  #   0: Top horse first
+  #   1: Bottom horse first
+  order: 1
 
 threshold:
   ######## Don't change these configs #############
