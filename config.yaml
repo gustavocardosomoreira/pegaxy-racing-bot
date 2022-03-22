@@ -27,14 +27,12 @@ screen:
 #  # Number of login attempts
 #  number_login_attempts: 3
 
-  # Timer to check for unknown Pegaxy screen errors, if it's in an unmanaged screen
-  # go back to racing root page
+  # Timer to check screen errors, if it's in error, updates the page
   refresh_check_error: 15
 
-  # Long timer for when there are no available actions to perform in that manager
-  # Case 1- All horses have 0 energy
-  # Case 2- There are no available horses to race
-  refresh_long_time: 60
+  # Timer to check if horses have recovered energy, from 0 energy
+  refresh_long_time: 5
+
 
 threshold:
   ######## Don't change these configs #############
