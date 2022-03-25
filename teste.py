@@ -1,4 +1,5 @@
 import sys
+import time
 import traceback
 from time import sleep
 
@@ -29,8 +30,10 @@ def main(config_file):
     while True:
         for manager in pegaxy_managers:
             if mode == 'R':
+                start = time.process_time()
                 current_screen = PegaxyScreen.get_current_screen()
-                print(PegaxyScreenEnum(current_screen).name)
+                end = time.process_time()
+                print('Screen=', PegaxyScreenEnum(current_screen).name, 'Elapsed:', end-start)
                 sleep(5)
             elif mode == 'O':
                 target = input('Type in target name (single mode):')
