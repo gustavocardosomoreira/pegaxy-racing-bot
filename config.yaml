@@ -43,4 +43,6 @@ threshold:
   # image comparison factor to find in screen - min 0 - máx 1
   default: 0.7
   button: 0.8
+  # Timeout in minutes to confirm that a race has started
+  race_timeout: 2
   #################################################

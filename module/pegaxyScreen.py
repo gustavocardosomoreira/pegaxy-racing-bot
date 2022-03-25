@@ -186,7 +186,15 @@ class PegaxyScreen:
             pega = PegaxyScreen.select_pega(manager)
             if pega:
                 manager.set_attr("race_requested", 1)
-                result = PegaxyScreen.confirm_race(manager)
+                r = do_with_timeout(
+                    PegaxyScreen.confirm_race,
+                    [manager],
+                    timeout= Config.get("threshold", "race_timeout") * 60
+                )
+                if r is None:
+                    logger_translated("Couldn't find metamask sign.")
+                    refresh_page(manager)
+                    result = False
             else:
                 logger_translated("skip and set long timer (horses have 0 energy)", LoggerEnum.TIMER_REFRESH)
                 manager.set_refresh_timer("refresh_long_time")
@@ -194,12 +202,7 @@ class PegaxyScreen:
 
         return result
 
-    @staticmethod
-    def confirm_race(manager, current_screen=None, n=0):
-        if n == 180:
-            refresh_page(manager)
-            return False
-
+    def confirm_race(manager, current_screen=None):
         current_screen = PegaxyScreen.get_current_screen() if current_screen is None else current_screen
         result = None
         if current_screen == PegaxyScreenEnum.RACE.value:  # Race confirmed.
@@ -208,23 +211,16 @@ class PegaxyScreen:
         elif current_screen == PegaxyScreenEnum.MATCHING.value or \
                 current_screen == PegaxyScreenEnum.MATCHFOUND.value:  # Wait a little bit more
             sleep(1)
-            PegaxyScreen.confirm_race(manager, n=n + 1)
 
         elif current_screen == PegaxyScreenEnum.UNABLETOJOINRACE.value:  # Deal with Racing Match Errors
             click_when_target_appears('find_another')
             pyautogui.moveTo(10, 10)
             manager.set_attr("race_requested", 1)
-            PegaxyScreen.wait_for_leave_screen(current_screen, time_beteween=1)
-            PegaxyScreen.confirm_race(manager, n=n + 1)
 
         elif current_screen == PegaxyScreenEnum.METAMASK_SIGN.value:
             signed = Metamask.sign_race(manager)
             if signed:
                 manager.set_attr("race_requested", 0)
-                PegaxyScreen.confirm_race(manager, n=n + 1)
-
-        else:
-            PegaxyScreen.confirm_race(manager, n=n + 1)
 
         return result
 
