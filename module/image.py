@@ -21,16 +21,11 @@ class Image:
         path = "assets/images/targets/"
         file_names = listdir(path)
 
-        targets = targets_RGB =  {}
+        targets = {}
         for file in file_names:
-            _BGR = cv2.imread(path + file) # Save images in both colorspaces
-            # _RGB = cv2.cvtColor(_BGR, cv2.COLOR_BGR2RGB)
-            targets[replace(file, ".png")] = _BGR
-            # targets_RGB[replace(file, ".png")] = _RGB
+            targets[replace(file, ".png")] = cv2.imread(path + file) # Save image in BGR
 
         Image.TARGETS = targets
-        # Image.TARGETS_RGB = targets_RGB
-
 
     def screen():
         with mss.mss() as sct:
