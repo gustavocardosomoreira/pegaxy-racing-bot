@@ -236,6 +236,7 @@ class PegaxyScreen:
 
         if current_screen == PegaxyScreenEnum.NOAVAILABLEPEGAS.value:
             logger_translated("skip and set long timer (no available pegas)", LoggerEnum.TIMER_REFRESH)
+            click_when_target_appears('button_x')
             manager.set_refresh_timer("refresh_long_time")
             return False
         else:

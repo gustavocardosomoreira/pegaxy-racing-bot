@@ -9,4 +9,5 @@ pytweening==1.0.4
 PyYAML==6.0
 packaging==21.3
 pillow==9.0.0
-Multi-Template-Matching
+Multi-Template-Matching==1.6.3
+requests==2.27.1
