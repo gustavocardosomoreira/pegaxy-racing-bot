@@ -83,7 +83,6 @@ class PegaxyScreen:
             "outofenergy_text": Image.TARGETS["outofenergy"],
             "findanothermatch_button": Image.TARGETS["find_another"],
             "noavailablepegas_text": Image.TARGETS["noavailablepegas"],
-            # "notice": Image.TARGETS["identify_notice"],
             "sign_button": Image.TARGETS["sign"],
          }
 
@@ -104,12 +103,13 @@ class PegaxyScreen:
             frozenset(["findanothermatch_button"]): PegaxyScreenEnum.UNABLETOJOINRACE.value,
             frozenset(["noavailablepegas_text", "pickpega_button"]): PegaxyScreenEnum.NOAVAILABLEPEGAS.value,
 
+            frozenset(["sign_button", "matchfound_text"]): PegaxyScreenEnum.METAMASK_SIGN.value,
             frozenset(["sign_button"]): PegaxyScreenEnum.METAMASK_SIGN.value,
         }
 
         img = Image.screen()
 
-        listTemplate = list(screen_templates.items())
+        listTemplate = list(templates.items())
         hits = matchTemplates(
             listTemplate,
             img,
@@ -119,8 +119,7 @@ class PegaxyScreen:
             score_threshold = Config.get("threshold", "default"),
             )
 
-        hits_list = hits.iloc[:, 0].tolist()
-        hits_set = frozenset(hits_list)
+        hits_set = frozenset(hits.iloc[:, 0].tolist())
 
         return screens.get(hits_set) if screens.get(hits_set) else -1
 

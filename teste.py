@@ -25,8 +25,7 @@ def main(config_file):
     pegaxy_browser_count = 1
     show_initial_screen_message = True
 
-    mode = input('Type in the wished test: [R]ead screen|[O]ne target|[N]o of targets|[T]este reconhecimento '
-                 'multicavalos: ')
+    mode = input('Type in the wished test: [R]ead screen|[O]ne target|[N]o of targets:')
     while True:
         for manager in pegaxy_managers:
             if mode == 'R':
@@ -51,11 +50,9 @@ def main(config_file):
                     print(len(Image.get_target_positions(target)), 'found.')
                 else:
                     print('Target is not in the database.')
-            elif mode == 'T':
-                input('Entre na tela de seleção dos cavalos para corrida e pressione enter')
-                PegaxyScreen.teste_multicavalos(manager)
             else:
                 print('Unreconized mode, exiting.')
+                sleep(5)
                 break
 
 
