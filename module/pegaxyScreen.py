@@ -33,13 +33,13 @@ class PegaxyScreenEnum(Enum):
 
 class PegaxyScreen:
     @staticmethod
-    def wait_for_screen(
-            pegaxyScreenEnum, time_beteween: float = 0.5, timeout: float = 60
+    def wait_for_screens(
+            pegaxyScreenEnum_list, time_beteween: float = 0.5, timeout: float = 60
     ):
         def check_screen():
             screen = PegaxyScreen.get_current_screen()
-            if screen == pegaxyScreenEnum:
-                return True
+            if screen in pegaxyScreenEnum_list:
+                return screen
             else:
                 return None
 
@@ -48,7 +48,8 @@ class PegaxyScreen:
         )
 
         if res is None:
-            raise Exception(f'Timeout waiting for screen {PegaxyScreenEnum(pegaxyScreenEnum).name}.')
+            var = [PegaxyScreenEnum(scr).name for scr in pegaxyScreenEnum_list]
+            raise Exception(f"Timeout waiting for screens {' '.join(var)}.")
 
         return res
 
@@ -132,7 +133,7 @@ class PegaxyScreen:
                 current_screen == PegaxyScreenEnum.MYASSETS.value:
             click_when_target_appears("racing_menu")
             pyautogui.moveTo(10, 10)
-            PegaxyScreen.wait_for_screen(PegaxyScreenEnum.ROOT.value, time_beteween=1)
+            PegaxyScreen.wait_for_screens([PegaxyScreenEnum.ROOT.value], time_beteween=1)
             return True
 
     @staticmethod
