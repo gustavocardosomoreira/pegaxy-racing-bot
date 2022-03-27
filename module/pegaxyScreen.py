@@ -155,6 +155,7 @@ class PegaxyScreen:
     @staticmethod
     def prepare(manager, refresh=False, current_screen=None):
         if refresh:
+            logger_translated("pegas energy", LoggerEnum.TIMER_REFRESH)
             refresh_page()
             sleep(10)
 
@@ -187,6 +188,7 @@ class PegaxyScreen:
                 manager.set_attr("race_requested", 1)
                 result = PegaxyScreen.confirm_race(manager)
             else:
+                logger_translated("skip and set long timer (horses have 0 energy)", LoggerEnum.TIMER_REFRESH)
                 manager.set_refresh_timer("refresh_long_time")
                 result = False
 
@@ -233,7 +235,7 @@ class PegaxyScreen:
         current_screen = PegaxyScreen.get_current_screen()
 
         if current_screen == PegaxyScreenEnum.NOAVAILABLEPEGAS.value:
-            logger_translated("Long timer", LoggerEnum.TIMER_REFRESH)
+            logger_translated("skip and set long timer (no available pegas)", LoggerEnum.TIMER_REFRESH)
             manager.set_refresh_timer("refresh_long_time")
             return False
         else:
@@ -281,9 +283,8 @@ class PegaxyScreen:
     @staticmethod
     def do_check_error(manager):
         current_screen = PegaxyScreen.get_current_screen()
-        if current_screen == PegaxyScreenEnum.NOT_FOUND.value or \
-                current_screen == PegaxyScreenEnum.UNABLETOJOINRACE.value or \
-                current_screen == PegaxyScreenEnum.NOAVAILABLEPEGAS.value:
+        if current_screen == PegaxyScreenEnum.NOT_FOUND.value:
+            logger_translated("Check screen error found, restarting...", LoggerEnum.ERROR)
             refresh_page(manager)
             sleep(20)
             return
@@ -299,6 +300,7 @@ class Metamask:
         #   Desligar o sinal "race_requested"
         # recursivar try_to_race()
         if manager.race_requested == 1:
+            logger_translated("Metamask sign", LoggerEnum.BUTTON_CLICK)
             click_when_target_appears('sign')
             manager.set_attr("race_requested", 0)
             pyautogui.moveTo(10, 10)
