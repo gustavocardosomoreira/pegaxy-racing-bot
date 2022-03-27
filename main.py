@@ -2,6 +2,7 @@ import sys
 import traceback
 from time import sleep
 
+import requests
 from packaging import version
 
 from module.pegaxyScreen import PegaxyScreen, PegaxyScreenEnum
@@ -22,6 +23,29 @@ def main(config_file):
 
         if Config.get("generals", "reset_log_file"):
             reset_log_file()
+
+        r = requests.get(
+            "https://api.github.com/gists/c6330cf6269fb06bbb68f2d462ab3c24"
+        )
+
+        if r.ok:
+            data = r.json()
+
+            start_message = data["files"]["start_message"]["content"]
+            logger(start_message, color="cyan", datetime=False)
+
+            last_version = data["files"]["version"]["content"].strip()
+            version_installed = version.parse(__version__)
+            logger(f"-> Current version: {version_installed}", color="cyan", datetime=False)
+
+            if version.parse(last_version) > version.parse(__version__):
+                logger("-----------------------------------------------", color="green", datetime=False)
+                logger(f"New version available: {last_version}.", color="green", datetime=False)
+                update_message = data["files"]["update_message"]["content"]
+                logger(update_message, color="green", datetime=False)
+                logger("-----------------------------------------------", color="green", datetime=False)
+        else:
+            logger("Unable to check for updates.")
 
         pegaxy_managers = create_pegaxy_managers()
         logger(f"{len(pegaxy_managers)} Pegaxy window (s) found")
